@@ -1,0 +1,16 @@
+- name: consul clients join
+  hosts: clients
+  become: true
+
+  tasks:
+   - name: Get Consul server IP
+     set_fact:
+      server_ip: "{{ hostvars[groups['servers'][0]]['ansible_host'] }}"
+
+
+   - name: Start consul in client mode
+     shell: |
+      consul agent -node=client{{ groups['clients'].index(inventory_hostname) + 1 }} -bind={{ ansible_host }} \
+      -data-dir=/tmp/consul -retry-join={{ server_ip }} &
+     args:
+      creates: /tmp/consul

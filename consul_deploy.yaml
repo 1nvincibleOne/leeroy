@@ -1,0 +1,10 @@
+- name: consul server deploy
+  hosts: servers
+  become: true
+
+  tasks:
+   - name: Start consul in server mode
+     shell: |
+      consul agent -server -bootstrap-expect=1 -node=server1 -bind={{ ansible_host }} -data-dir=/tmp/consul -ui &
+     args:
+      creates: /tmp/consul
