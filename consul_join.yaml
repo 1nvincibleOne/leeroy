@@ -5,7 +5,7 @@
   tasks:
    - name: Get Consul server IP
      set_fact:
-      server_ip: "{{ hostvars[groups['servers'][0]]['ansible_host'] }}"
+      server_ip: "{{ groups['servers'][0] }}"
 
 
    - name: Start consul in client mode
