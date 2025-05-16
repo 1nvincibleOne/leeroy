@@ -1,0 +1,34 @@
+name: jenkins
+
+services:
+  jenkinsMain:
+    image: jenkins/jenkins:lts-jdk17
+    restart: on-failure
+    ports: 
+      - "50000:50000"
+      - "8081:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-net
+  
+  jenkins_agent:
+    image: jenkins/inbound-agent:latest
+    restart: always
+    depends_on:
+      - jenkinsMain
+    networks:
+      - jenkins-net
+    environment:
+      - JENKINS_URL=http://jenkinsMain:8080
+      - JENKINS_SECRET=54fb3116b3ce7d2d707be8b0904437e261a37a42a880d4a7831ff821ac3f59c4
+      - JENKINS_AGENT_NAME=agentBond
+    init: true
+
+networks:
+  jenkins-net:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+    external: true
